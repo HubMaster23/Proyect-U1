@@ -1,3 +1,4 @@
+//Catalogo
 <?php
 $pageTitle = 'Catálogo | Kitsune Store';
 require 'includes/data.php';
