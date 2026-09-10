@@ -1,208 +1,67 @@
 <?php
+$pageTitle = 'Resumen de compra | Kitsune Store';
+require 'includes/data.php';
+require 'includes/header.php';
 
-session_start();
-
-if (!isset($_SESSION['usuario'])) {
-
-    header("Location: index.php");
-    exit();
-
-}
-
-if ($_SESSION['tipo'] !== 'cliente') {
-
-    header("Location: admin.php");
-    exit();
-
-}
-
-
-// Productos
-$productos = [
-
-    1 => [
-        "nombre" => "Figura de Naruto Uzumaki",
-        "precio" => 450
-    ],
-
-    2 => [
-        "nombre" => "Figura de Monkey D. Luffy",
-        "precio" => 550
-    ],
-
-    3 => [
-        "nombre" => "Figura de Tanjiro Kamado",
-        "precio" => 480
-    ],
-
-    4 => [
-        "nombre" => "Manga Attack on Titan",
-        "precio" => 180
-    ],
-
-    5 => [
-        "nombre" => "Manga Jujutsu Kaisen",
-        "precio" => 170
-    ],
-
-    6 => [
-        "nombre" => "Figura My Hero Academia",
-        "precio" => 400
-    ]
-
-];
-
-
-// Crear carrito si todavía no existe
-if (!isset($_SESSION['carrito'])) {
-
-    $_SESSION['carrito'] = [];
-
-}
-
-
-// Agregar producto
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $id = $_POST['id'];
-
-    if (isset($productos[$id])) {
-
-        $_SESSION['carrito'][] = $id;
-
-    }
-
-}
-
-
-// Calcular total
+$carrito = $_SESSION['carrito'] ?? [];
 $total = 0;
-
 ?>
+<section class="hero cart-hero">
+    <div>
+        <span class="eyebrow">ORDEN DE COMPRA</span>
+        <h1>Tu <span>resumen.</span></h1>
+        <p>Revisa los productos seleccionados y el total de tu compra simulada.</p>
+    </div>
+    <div class="hero-symbol">♡</div>
+</section>
 
-<!DOCTYPE html>
-<html lang="es">
+<section class="content-card order-card">
+    <div class="section-heading">
+        <div>
+            <span class="eyebrow">DETALLE</span>
+            <h2>Productos seleccionados</h2>
+        </div>
+        <a href="catalogo.php" class="btn btn-secondary">← Seguir comprando</a>
+    </div>
 
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>YumeWorld - Carrito</title>
-
-    <link rel="stylesheet" href="css/estilos.css">
-
-</head>
-
-<body>
-
-
-<header class="header">
-
-    <h1>🌸 YumeWorld</h1>
-
-    <a href="cliente.php" class="btn">
-        ← Regresar al catálogo
-    </a>
-
-</header>
-
-
-<main class="carrito">
-
-    <h2>🛒 Resumen de compra</h2>
-
-
-    <?php
-
-    if (empty($_SESSION['carrito'])):
-
-    ?>
-
-        <p>
-            No hay productos en el carrito.
-        </p>
-
-    <?php
-
-    else:
-
-    ?>
-
-
-        <table>
-
-            <tr>
-
-                <th>Producto</th>
-
-                <th>Precio</th>
-
-                <th>Subtotal</th>
-
-            </tr>
-
-
-            <?php foreach ($_SESSION['carrito'] as $id): ?>
-
+    <?php if (empty($carrito)): ?>
+        <div class="empty-state">
+            <div class="empty-icon">🛒</div>
+            <h3>Tu carrito está vacío</h3>
+            <p>Agrega algún producto desde el catálogo para crear una compra simulada.</p>
+            <a href="catalogo.php" class="btn btn-primary">Ir al catálogo</a>
+        </div>
+    <?php else: ?>
+        <div class="order-list">
+            <?php foreach ($carrito as $id => $cantidad): ?>
                 <?php
-
-                $producto = $productos[$id];
-
-                $subtotal = $producto['precio'];
-
-                $total += $subtotal;
-
+                    if (!isset($productos[$id])) continue;
+                    $producto = $productos[$id];
+                    $subtotal = $producto['precio'] * $cantidad;
+                    $total += $subtotal;
                 ?>
-
-
-                <tr>
-
-                    <td>
-                        <?php echo $producto['nombre']; ?>
-                    </td>
-
-                    <td>
-                        $<?php echo number_format(
-                            $producto['precio'],
-                            2
-                        ); ?>
-                    </td>
-
-                    <td>
-                        $<?php echo number_format(
-                            $subtotal,
-                            2
-                        ); ?>
-                    </td>
-
-                </tr>
-
-
+                <div class="order-row">
+                    <img src="<?= htmlspecialchars($producto['imagen']) ?>" alt="">
+                    <div class="order-product">
+                        <strong><?= htmlspecialchars($producto['nombre']) ?></strong>
+                        <small><?= htmlspecialchars($producto['categoria']) ?></small>
+                    </div>
+                    <div class="order-qty">x<?= $cantidad ?></div>
+                    <div class="order-price">$<?= number_format($subtotal, 2) ?></div>
+                </div>
             <?php endforeach; ?>
-
-
-        </table>
-
-
-        <div class="total">
-
-            <h2>
-
-                Total a pagar:
-                $<?php echo number_format($total, 2); ?>
-
-            </h2>
-
         </div>
 
+        <div class="total-box">
+            <div><span>Subtotal</span><strong>$<?= number_format($total, 2) ?></strong></div>
+            <div><span>Envío</span><strong>Gratis</strong></div>
+            <div class="grand-total"><span>Total a pagar</span><strong>$<?= number_format($total, 2) ?></strong></div>
+        </div>
 
+        <div class="checkout-note">
+            ✦ Esta compra es una <strong>simulación académica</strong>. No se realiza ningún cobro real.
+        </div>
     <?php endif; ?>
+</section>
 
-
-</main>
-
-</body>
-
-</html>
+<?php require 'includes/footer.php'; ?>
