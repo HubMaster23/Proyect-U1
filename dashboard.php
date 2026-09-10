@@ -1,3 +1,4 @@
+//dashboard
 <?php
 $pageTitle = 'Dashboard | Kitsune Store';
 require 'includes/header.php';
