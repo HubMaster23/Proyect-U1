@@ -1,38 +1,23 @@
+<?php
+session_start();
+$_SESSION = [];
+session_destroy();
+?>
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Error de autenticación</title>
-
-    <link rel="stylesheet" href="css/estilos.css">
-
+    <title>Error | Kitsune Store</title>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
-
-<body>
-
-    <div class="error-container">
-
-        <h1>❌ Error de autenticación</h1>
-
-        <p>
-            El usuario o la contraseña son incorrectos.
-        </p>
-
-        <p>
-            Por favor, verifica tus datos e intenta nuevamente.
-        </p>
-
-        <a href="index.php" class="btn">
-            Regresar al inicio de sesión
-        </a>
-
-    </div>
-
+<body class="login-page">
+    <main class="error-shell">
+        <div class="error-symbol">狐</div>
+        <span class="eyebrow">ERROR DE AUTENTICACIÓN</span>
+        <h1>Credenciales inválidas</h1>
+        <p>El usuario o la contraseña que ingresaste no son correctos. Verifica tus datos e inténtalo nuevamente.</p>
+        <a href="index.php" class="btn btn-primary">Volver al inicio</a>
+    </main>
 </body>
-
 </html>
