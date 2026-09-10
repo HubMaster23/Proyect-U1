@@ -1,3 +1,4 @@
+//Carrito
 <?php
 $pageTitle = 'Resumen de compra | Kitsune Store';
 require 'includes/data.php';
