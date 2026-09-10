@@ -1,4 +1,4 @@
-//Administrador
+//Panel de Administrador
 <?php
 session_start();
 if (!isset($_SESSION['usuario']) || $_SESSION['tipo'] !== 'administrador') {
