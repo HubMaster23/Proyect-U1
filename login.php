@@ -1,54 +1,32 @@
 <?php
-
 session_start();
 
-// Usuarios definidos directamente en el código
 $usuarios = [
-
-    "administrador" => [
-        "password" => "asd",
-        "tipo" => "administrador"
+    'administrador' => [
+        'password' => 'asd',
+        'tipo' => 'administrador'
     ],
-
-    "cliente" => [
-        "password" => "123",
-        "tipo" => "cliente"
+    'cliente' => [
+        'password' => '123',
+        'tipo' => 'cliente'
     ]
-
 ];
 
-$usuario = $_POST['usuario'] ?? '';
+$usuario = trim($_POST['usuario'] ?? '');
 $password = $_POST['password'] ?? '';
 
+if (isset($usuarios[$usuario]) && $usuarios[$usuario]['password'] === $password) {
+    session_regenerate_id(true);
+    $_SESSION['usuario'] = $usuario;
+    $_SESSION['tipo'] = $usuarios[$usuario]['tipo'];
 
-// Verificar que el usuario exista
-if (isset($usuarios[$usuario])) {
-
-    // Verificar contraseña
-    if ($usuarios[$usuario]['password'] === $password) {
-
-        $_SESSION['usuario'] = $usuario;
-        $_SESSION['tipo'] = $usuarios[$usuario]['tipo'];
-
-        // Redireccionar dependiendo del tipo
-        if ($_SESSION['tipo'] === 'administrador') {
-
-            header("Location: admin.php");
-
-        } else {
-
-            header("Location: cliente.php");
-
-        }
-
-        exit();
-
+    if ($_SESSION['tipo'] === 'administrador') {
+        header('Location: dashboard.php');
+    } else {
+        header('Location: catalogo.php');
     }
-
+    exit;
 }
 
-// Si las credenciales son incorrectas
-header("Location: error.php");
-exit();
-
-?>
+header('Location: index.php?error=1');
+exit;
