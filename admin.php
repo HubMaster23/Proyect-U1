@@ -1,173 +1,102 @@
 <?php
+$pageTitle = 'Dashboard | Kitsune Store';
+require 'includes/header.php';
 
-session_start();
-
-// Verificar que exista una sesión
-if (!isset($_SESSION['usuario'])) {
-
-    header("Location: index.php");
-    exit();
-
-}
-
-// Verificar que sea administrador
-if ($_SESSION['tipo'] !== 'administrador') {
-
-    header("Location: cliente.php");
-    exit();
-
-}
-
+$totalProductos = 6;
+$totalExistencias = 66;
+$ventasSimuladas = [1250, 1890, 980, 2400, 1760, 2950];
+$meses = ['Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep'];
 ?>
+<section class="hero dashboard-hero">
+    <div>
+        <span class="eyebrow">PANEL DE ADMINISTRACIÓN</span>
+        <h1>Hola, <?= htmlspecialchars($_SESSION['usuario']) ?> <span class="sparkle">✦</span></h1>
+        <p>Consulta rápidamente el estado de tu tienda anime y manga.</p>
+    </div>
+    <div class="hero-symbol">⛩</div>
+</section>
 
-<!DOCTYPE html>
-<html lang="es">
+<section class="stats-grid">
+    <article class="stat-card">
+        <span class="stat-icon">◈</span>
+        <div><p>Productos</p><strong><?= $totalProductos ?></strong></div>
+    </article>
+    <article class="stat-card">
+        <span class="stat-icon">◇</span>
+        <div><p>Existencias</p><strong><?= $totalExistencias ?></strong></div>
+    </article>
+    <article class="stat-card">
+        <span class="stat-icon">✦</span>
+        <div><p>Ventas del mes</p><strong>$2,950</strong></div>
+    </article>
+    <article class="stat-card">
+        <span class="stat-icon">☾</span>
+        <div><p>Usuarios activos</p><strong>18</strong></div>
+    </article>
+</section>
 
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>YumeWorld - Administrador</title>
-
-    <link rel="stylesheet" href="css/estilos.css">
-
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-</head>
-
-<body>
-
-    <header class="header">
-
-        <h1>🌸 YumeWorld</h1>
-
+<section class="content-card chart-card">
+    <div class="section-heading">
         <div>
-
-            <span>
-                Bienvenido, <?php echo $_SESSION['usuario']; ?>
-            </span>
-
-            <a href="logout.php" class="logout">
-                Cerrar sesión
-            </a>
-
+            <span class="eyebrow">ANÁLISIS</span>
+            <h2>Ventas simuladas</h2>
         </div>
+        <span class="pill">Últimos 6 meses</span>
+    </div>
+    <div class="chart-wrap">
+        <canvas id="ventasChart"></canvas>
+    </div>
+</section>
 
-    </header>
+<section class="quick-actions">
+    <a href="catalogo.php" class="action-card">
+        <span>🛍️</span>
+        <div><strong>Ver catálogo</strong><small>Revisar productos disponibles</small></div>
+        <b>→</b>
+    </a>
+    <a href="logout.php" class="action-card">
+        <span>↪</span>
+        <div><strong>Cerrar sesión</strong><small>Salir de la cuenta actual</small></div>
+        <b>→</b>
+    </a>
+</section>
 
-
-    <main class="dashboard">
-
-        <h2>Panel del Administrador</h2>
-
-        <p>
-            Información general de YumeWorld
-        </p>
-
-
-        <div class="cards">
-
-            <div class="card">
-
-                <h3>📦 Productos</h3>
-
-                <p>6</p>
-
-            </div>
-
-
-            <div class="card">
-
-                <h3>👥 Clientes</h3>
-
-                <p>25</p>
-
-            </div>
-
-
-            <div class="card">
-
-                <h3>💰 Ventas</h3>
-
-                <p>$8,450</p>
-
-            </div>
-
-        </div>
-
-
-        <div class="chart-container">
-
-            <h2>Ventas por mes</h2>
-
-            <canvas id="ventasChart"></canvas>
-
-        </div>
-
-    </main>
-
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-
 const ctx = document.getElementById('ventasChart');
-
 new Chart(ctx, {
-
-    type: 'bar',
-
+    type: 'line',
     data: {
-
-        labels: [
-            'Enero',
-            'Febrero',
-            'Marzo',
-            'Abril',
-            'Mayo',
-            'Junio'
-        ],
-
+        labels: <?= json_encode($meses) ?>,
         datasets: [{
-
             label: 'Ventas ($)',
-
-            data: [
-                1200,
-                1900,
-                1500,
-                2500,
-                1800,
-                3000
-            ],
-
-            borderWidth: 1
-
+            data: <?= json_encode($ventasSimuladas) ?>,
+            borderWidth: 3,
+            tension: 0.4,
+            fill: true,
+            backgroundColor: 'rgba(126, 87, 194, 0.12)',
+            borderColor: '#8b5cf6',
+            pointBackgroundColor: '#ffffff',
+            pointBorderColor: '#8b5cf6',
+            pointBorderWidth: 3,
+            pointRadius: 5
         }]
-
     },
-
     options: {
-
         responsive: true,
-
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false }
+        },
         scales: {
-
             y: {
-
-                beginAtZero: true
-
+                beginAtZero: true,
+                ticks: {
+                    callback: value => '$' + value
+                }
             }
-
         }
-
     }
-
 });
-
 </script>
-
-</body>
-
-</html>
+<?php require 'includes/footer.php'; ?>
